@@ -1,0 +1,14 @@
+<resources>
+    <!-- Tema utama -->
+    <style name="Theme.ResellerApp" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#3700B3</item>
+        <item name="colorAccent">#03DAC5</item>
+    </style>
+
+    <!-- Style untuk elemen tertentu -->
+    <style name="CustomButtonStyle">
+        <item name="android:background">#FF4081</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>
