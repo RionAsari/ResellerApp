@@ -1,5 +1,3 @@
-// App-level build.gradle.kts
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -40,25 +38,40 @@ android {
     }
 
     buildFeatures {
+        viewBinding = true // Enable ViewBinding
         compose = true
     }
 }
 
 dependencies {
-    implementation("androidx.recyclerview:recyclerview:1.2.1")  // or a similar version
+    implementation("com.journeyapps:zxing-android-embedded:4.2.0")
+
+    // Firebase
     implementation("com.google.firebase:firebase-database:20.0.5")
     implementation("com.google.firebase:firebase-auth:21.0.1")
     implementation("com.google.firebase:firebase-core:21.0.0")
+
+    // QR Code Generation
+    implementation("com.journeyapps:zxing-android-embedded:4.2.0")
+
+    // Material Design
     implementation("com.google.android.material:material:1.8.0")
-    implementation("com.google.zxing:core:3.4.1")  // For QR code generation
+
+    // Recyclerview
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    // Kotlin extensions
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+
+    // Compose libraries
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

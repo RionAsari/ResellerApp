@@ -2,28 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/resellerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reseller Name"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/orderDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Order details"/>
+        android:text="Nama Reseller"
+        android:textSize="16sp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:text="Delete" />
 </LinearLayout>

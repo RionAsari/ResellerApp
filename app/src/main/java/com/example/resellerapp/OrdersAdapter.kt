@@ -22,10 +22,9 @@ class OrdersAdapter(
         val order = ordersList[position]
         holder.bind(order)
         holder.deleteButton.setOnClickListener {
-            order.key.let { key ->
-                if (key.isNotEmpty()) {
-                    onDeleteClick(key)  // Pastikan key digunakan untuk penghapusan
-                }
+            val key = order.key // Dapatkan key dari Order
+            if (key.isNotEmpty()) {
+                onDeleteClick(key)  // Kirimkan key untuk penghapusan
             }
         }
     }

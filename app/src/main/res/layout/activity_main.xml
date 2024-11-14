@@ -1,28 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_main.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- RecyclerView to display orders -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ordersRecyclerView"
+    <TextView
+        android:id="@+id/ordersTextView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"
+        android:text="Data Pesanan Akan Ditampilkan Disini"
+        android:textSize="16sp" />
 
-    <!-- Button to generate new QR code -->
     <Button
-        android:id="@+id/generateQRCodeButton"
+        android:id="@+id/generateQrButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Generate QR Code"/>
-
-    <!-- ImageView to display the generated QR code -->
-    <ImageView
-        android:id="@+id/qrImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:text="Generate QR Code" />
 </LinearLayout>
