@@ -1,4 +1,4 @@
-<!-- activity_main.xml -->
+<!-- activity_main.xml
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,4 +17,106 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Generate QR Code" />
-</LinearLayout>
+</LinearLayout> -->
+
+<!-- activity_main.xml -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F8FA"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/rounded_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="Home"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:textColor="#007BFF" />
+
+        <ImageView
+            android:id="@+id/generateQrButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_qr"
+            android:background="@drawable/circle_background"
+            android:padding="8dp"
+            android:text="QR" />
+
+        <ImageView
+            android:id="@+id/ivLead"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_lead"
+            android:background="@drawable/circle_background"
+            android:padding="8dp"
+            android:text="Lead" />
+    </LinearLayout>
+
+    <!-- Grouping Data Date, Delete All Button, and RecyclerView -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="115dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+        <!-- Data Date -->
+        <TextView
+            android:id="@+id/tvDataDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="14dp"
+            android:text="Data Date:"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/rvOrders"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Delete All Button -->
+        <ImageView
+            android:id="@+id/deleteallButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="185dp"
+            android:background="@drawable/circle_background"
+            android:contentDescription="Delete all"
+            android:padding="4dp"
+            android:src="@drawable/ic_deleteall"
+            app:layout_constraintBottom_toBottomOf="@+id/tvDataDate"
+            app:layout_constraintStart_toEndOf="@+id/tvDataDate"
+            app:layout_constraintTop_toTopOf="@+id/tvDataDate" />
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrders"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDataDate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/resellerNameInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Masukkan Nama Reseller"
         android:inputType="text"/>
 
@@ -17,7 +17,7 @@
     <Button
         android:id="@+id/generateQrButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Generate QR"/>
 
     <!-- ImageView untuk menampilkan QR Code -->

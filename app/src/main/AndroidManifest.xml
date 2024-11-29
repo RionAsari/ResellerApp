@@ -36,7 +36,7 @@
 
         <!-- Menambahkan deklarasi untuk GenerateQRActivity -->
         <activity
-            android:name=".GenerateQRActivity"
+            android:name=".ui.theme.GenerateQRActivity"
             android:exported="true"
             android:label="Generate QR Code"
             android:theme="@style/Theme.ResellerApp" />

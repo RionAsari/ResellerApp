@@ -1,4 +1,4 @@
-package com.example.resellerapp
+package com.example.resellerapp.ui.theme
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.resellerapp.R
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 
