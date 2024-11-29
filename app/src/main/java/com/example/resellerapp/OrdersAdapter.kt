@@ -115,6 +115,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.resellerapp.Order
 import com.example.resellerapp.MainActivity
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 // Adapter class for RecyclerView
 class OrdersAdapter(
@@ -164,16 +167,21 @@ class OrdersAdapter(
         private val phoneText: TextView = itemView.findViewById(R.id.phoneText)
         private val itemText: TextView = itemView.findViewById(R.id.itemText)
         private val dpText: TextView = itemView.findViewById(R.id.dpText)
+        private val dateText: TextView = itemView.findViewById(R.id.dateText)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
         val saveButton: ImageView = itemView.findViewById(R.id.saveButton)
 
         fun bind(order: Order) {
+            val formatter = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
+            val dateString = formatter.format(order.timestamp)
+
             resellerName.text = order.resellerName
             nameText.text = "Nama : ${order.name}"
             addressText.text = "Alamat : ${order.address}"
             phoneText.text = "No.Telepon : ${order.phone}"
             itemText.text = "Barang : ${order.item}"
             dpText.text = "DP : ${order.dp}"
+            dateText.text = "Tanggal Pengajuan : $dateString"
         }
     }
 }
