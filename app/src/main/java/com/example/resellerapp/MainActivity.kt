@@ -64,102 +64,28 @@ class MainActivity : AppCompatActivity() {
     }
 }*/
 
-/*package com.example.resellerapp
-
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.resellerapp.databinding.ActivityMainBinding
-import com.example.resellerapp.ui.theme.GenerateQRActivity
-import com.google.firebase.database.*
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var database: DatabaseReference
-    private lateinit var ordersAdapter: OrdersAdapter  // Adapter untuk RecyclerView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        database = FirebaseDatabase.getInstance().reference
-
-        // Inisialisasi RecyclerView
-        ordersAdapter = OrdersAdapter(
-            ordersList = emptyList(),
-            onDeleteClick = { key -> deleteOrder(key) },
-            onSaveClick = { key -> saveOrder(key) }
-        )
-        binding.rvOrders.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ordersAdapter
-        }
-
-        // Mendapatkan data pesanan dari Firebase
-        val ordersRef = database.child("orders")
-        ordersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val ordersList = mutableListOf<Order>()
-
-                snapshot.children.forEach { orderSnapshot ->
-                    val order = orderSnapshot.getValue(Order::class.java)
-                    if (order != null) {
-                        // Masukkan key dan pastikan dp valid
-                        val orderWithKey = order.copy(
-                            key = orderSnapshot.key ?: "",
-                            dp = order.dp.toString().toIntOrNull() ?: 0
-                        )
-                        ordersList.add(orderWithKey)
-                    }
-                }
-
-                // Perbarui RecyclerView dengan data baru
-                ordersAdapter.updateOrdersList(ordersList)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
-
-        // Tombol untuk ke QRCodeActivity
-        binding.generateQrButton.setOnClickListener {
-            val intent = Intent(this, GenerateQRActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    // Fungsi untuk menghapus pesanan
-    private fun deleteOrder(key: String) {
-        database.child("orders").child(key).removeValue()
-    }
-
-    // Fungsi untuk menyimpan (bisa diisi logika sesuai kebutuhan)
-    private fun saveOrder(key: String) {
-        // Logika penyimpanan (contoh: update status di Firebase)
-    }
-}*/
-
 package com.example.resellerapp
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.resellerapp.databinding.ActivityMainBinding
 import com.example.resellerapp.ui.theme.GenerateQRActivity
 import com.google.firebase.database.*
-import com.example.resellerapp.OrdersAdapter
-import com.example.resellerapp.Order
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: DatabaseReference
     private lateinit var ordersAdapter: OrdersAdapter // Adapter untuk RecyclerView
+    private var previousOrdersCount: Int = 0 // Menyimpan jumlah data order sebelumnya
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,10 +114,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, GenerateQRActivity::class.java)
             startActivity(intent)
         }
+
+        // Handle delete all
+        binding.deleteallButton.setOnClickListener {
+            deleteallOrders()
+        }
+
+        // Buat Notification Channel
+        createNotificationChannel()
     }
 
     // Fungsi untuk mengamati data di Firebase
-    private fun observeOrders() {
+    /*private fun observeOrders() {
         val ordersRef = database.child("orders")
         ordersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -213,16 +147,98 @@ class MainActivity : AppCompatActivity() {
                 // Logika error handling
             }
         })
+    }*/
+
+    private fun observeOrders() {
+        val ordersRef = database.child("orders")
+        ordersRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val ordersList = mutableListOf<Order>()
+
+                // Mengambil data dari Firebase
+                snapshot.children.forEach { orderSnapshot ->
+                    val order = orderSnapshot.getValue(Order::class.java)
+                    if (order != null) {
+                        ordersList.add(order.copy(key = orderSnapshot.key ?: ""))
+                    }
+                }
+
+                // Perbarui adapter dengan data baru
+                ordersAdapter.updateOrdersList(ordersList)
+
+                // Cek apakah jumlah data bertambah
+                val currentOrdersCount = ordersList.size
+                if (currentOrdersCount > previousOrdersCount) {
+                    // Tampilkan notifikasi bahwa ada order baru
+                    showNewOrderNotification("New Order", "A new order has been added!")
+                }
+
+                // Perbarui jumlah data sebelumnya
+                previousOrdersCount = currentOrdersCount
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Logika error handling
+            }
+        })
     }
 
-    // Fungsi untuk menghapus data dari Firebase
     private fun deleteOrder(key: String) {
-        database.child("orders").child(key).removeValue()
+        database.child("orders").child(key).removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                ordersAdapter.updateOrdersList(emptyList()) // Kosongkan RecyclerView
+                showToast("Order deleted successfully")
+            } else {
+                showToast("Failed to delete order")
+            }
+        }
     }
 
-    // Fungsi untuk menyimpan data (contoh: update status)
     private fun saveOrder(key: String) {
-        // Logika untuk menyimpan atau update status (contoh: mark as completed)
         database.child("orders").child(key).child("status").setValue("Saved")
+    }
+
+    private fun deleteallOrders() {
+        database.child("orders").removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                ordersAdapter.updateOrdersList(emptyList()) // Kosongkan RecyclerView
+                showToast("All orders deleted successfully")
+            } else {
+                showToast("Failed to delete all orders")
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Fungsi untuk membuat Notification Channel (hanya untuk Android Oreo ke atas)
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "order_notifications",
+                "Order Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for new orders"
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    // Fungsi untuk menampilkan notifikasi
+    private fun showNewOrderNotification(title: String, message: String) {
+        val builder = NotificationCompat.Builder(this, "order_notifications")
+            .setSmallIcon(R.drawable.ic_notification) // Ganti dengan icon Anda
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, builder.build())
     }
 }
