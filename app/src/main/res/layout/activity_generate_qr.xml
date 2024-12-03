@@ -25,6 +25,16 @@
         android:id="@+id/qrImageView"
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:contentDescription="QR Code"/>
+
+    <!-- Tombol untuk Menyimpan QR Code -->
+    <Button
+        android:id="@+id/saveQrButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:text="Simpan QR Code"/>
 
 </LinearLayout>

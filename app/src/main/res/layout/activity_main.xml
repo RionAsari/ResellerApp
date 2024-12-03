@@ -1,24 +1,3 @@
-<!-- activity_main.xml
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:id="@+id/ordersTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Data Pesanan Akan Ditampilkan Disini"
-        android:textSize="16sp" />
-
-    <Button
-        android:id="@+id/generateQrButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Generate QR Code" />
-</LinearLayout> -->
-
 <!-- activity_main.xml -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -71,7 +50,7 @@
             android:text="Lead" />
     </LinearLayout>
 
-    <!-- Grouping Data Date, Delete All Button, and RecyclerView -->
+    <!-- Grouping Data Date, Delete All Button, Export Button, and RecyclerView -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -106,6 +85,21 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvDataDate"
             app:layout_constraintStart_toEndOf="@+id/tvDataDate"
             app:layout_constraintTop_toTopOf="@+id/tvDataDate" />
+
+        <!-- Export Button -->
+        <Button
+            android:id="@+id/exportButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_background"
+        android:text="Export"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteallButton"
+        app:layout_constraintEnd_toStartOf="@+id/deleteallButton"
+        app:layout_constraintTop_toTopOf="@+id/deleteallButton" />
+
+
 
         <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView

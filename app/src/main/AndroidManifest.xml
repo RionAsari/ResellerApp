@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -39,6 +40,13 @@
             android:name=".ui.theme.GenerateQRActivity"
             android:exported="true"
             android:label="Generate QR Code"
+            android:theme="@style/Theme.ResellerApp" />
+
+        <!-- Menambahkan deklarasi untuk SavedOrderActivity -->
+        <activity
+            android:name=".SavedOrderActivity"
+            android:exported="true"
+            android:label="Saved Orders"
             android:theme="@style/Theme.ResellerApp" />
 
     </application>

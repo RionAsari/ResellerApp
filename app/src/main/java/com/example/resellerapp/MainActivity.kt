@@ -1,228 +1,248 @@
-/*package com.example.resellerapp
-
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.resellerapp.databinding.ActivityMainBinding
-import com.google.firebase.database.*
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var database: DatabaseReference
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        database = FirebaseDatabase.getInstance().reference
-
-        // Mendapatkan data pesanan dari Firebase
-        val ordersRef = database.child("orders")
-
-        ordersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val ordersList = mutableListOf<Order>()
-
-                snapshot.children.forEach { orderSnapshot ->
-                    val order = orderSnapshot.getValue(Order::class.java)
-                    if (order != null) {
-                        // Pastikan dp bisa dikonversi menjadi Int jika dibutuhkan
-                        val orderWithKey = order.copy(
-                            key = orderSnapshot.key ?: "",
-                            dp = order.dp.toString().toIntOrNull() ?: 0 // Mengonversi dp jika perlu
-                        )
-                        ordersList.add(orderWithKey)
-                    }
-                }
-
-                // Update tampilan dengan ordersList
-                binding.ordersTextView.text = ordersList.joinToString("\n") { order ->
-                    "Nama Reseller: ${order.resellerName}\n" +
-                            "Nama: ${order.name}\n" +
-                            "Alamat: ${order.address}\n" +
-                            "Telepon: ${order.phone}\n" +
-                            "Barang: ${order.item}\n" +
-                            "DP: ${order.dp}\n\n"
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
-
-
-
-
-        // Tombol untuk ke QRCodeActivity
-        binding.generateQrButton.setOnClickListener {
-            val intent = Intent(this, GenerateQRActivity::class.java)
-            startActivity(intent)
-        }
-    }
-}*/
-
-/*package com.example.resellerapp
-
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.resellerapp.databinding.ActivityMainBinding
-import com.example.resellerapp.ui.theme.GenerateQRActivity
-import com.google.firebase.database.*
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var database: DatabaseReference
-    private lateinit var ordersAdapter: OrdersAdapter  // Adapter untuk RecyclerView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        database = FirebaseDatabase.getInstance().reference
-
-        // Inisialisasi RecyclerView
-        ordersAdapter = OrdersAdapter(
-            ordersList = emptyList(),
-            onDeleteClick = { key -> deleteOrder(key) },
-            onSaveClick = { key -> saveOrder(key) }
-        )
-        binding.rvOrders.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ordersAdapter
-        }
-
-        // Mendapatkan data pesanan dari Firebase
-        val ordersRef = database.child("orders")
-        ordersRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val ordersList = mutableListOf<Order>()
-
-                snapshot.children.forEach { orderSnapshot ->
-                    val order = orderSnapshot.getValue(Order::class.java)
-                    if (order != null) {
-                        // Masukkan key dan pastikan dp valid
-                        val orderWithKey = order.copy(
-                            key = orderSnapshot.key ?: "",
-                            dp = order.dp.toString().toIntOrNull() ?: 0
-                        )
-                        ordersList.add(orderWithKey)
-                    }
-                }
-
-                // Perbarui RecyclerView dengan data baru
-                ordersAdapter.updateOrdersList(ordersList)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
-
-        // Tombol untuk ke QRCodeActivity
-        binding.generateQrButton.setOnClickListener {
-            val intent = Intent(this, GenerateQRActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    // Fungsi untuk menghapus pesanan
-    private fun deleteOrder(key: String) {
-        database.child("orders").child(key).removeValue()
-    }
-
-    // Fungsi untuk menyimpan (bisa diisi logika sesuai kebutuhan)
-    private fun saveOrder(key: String) {
-        // Logika penyimpanan (contoh: update status di Firebase)
-    }
-}*/
-
 package com.example.resellerapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.resellerapp.databinding.ActivityMainBinding
 import com.example.resellerapp.ui.theme.GenerateQRActivity
 import com.google.firebase.database.*
-import com.example.resellerapp.OrdersAdapter
-import com.example.resellerapp.Order
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
+import android.os.Environment
+import java.text.SimpleDateFormat
+import java.util.*
+import android.content.ContentValues
+import android.content.ContentResolver
+import android.os.Build
+import android.provider.MediaStore
+import java.io.OutputStream
+
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: DatabaseReference
-    private lateinit var ordersAdapter: OrdersAdapter // Adapter untuk RecyclerView
+    private lateinit var ordersAdapter: OrdersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Firebase Database reference
+        // Setup Firebase reference
         database = FirebaseDatabase.getInstance().reference
 
-        // Setup RecyclerView dengan adapter
+        // Setup RecyclerView Adapter
         ordersAdapter = OrdersAdapter(
             ordersList = emptyList(),
-            onDeleteClick = { key -> deleteOrder(key) },
-            onSaveClick = { key -> saveOrder(key) }
+            onDeleteClick = { resellerName, key -> showDeleteOrderConfirmationDialog(resellerName, key) },
+            onSaveClick = { key -> saveOrderAsSaved(key) },
+            showSaveButton = true
         )
+
+        // Setup RecyclerView
         binding.rvOrders.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ordersAdapter
         }
 
-        // Observasi data dari Firebase
         observeOrders()
 
-        // Tombol Generate QR Code
+        // Event tombol untuk generate QR
         binding.generateQrButton.setOnClickListener {
             val intent = Intent(this, GenerateQRActivity::class.java)
             startActivity(intent)
         }
+
+        // Event tombol untuk saved orders
+        binding.ivLead.setOnClickListener {
+            val intent = Intent(this, SavedOrderActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Event tombol delete semua orders
+        binding.deleteallButton.setOnClickListener {
+            showDeleteConfirmationDialog()
+        }
+
+        // Event tombol untuk export data ke Excel
+        binding.exportButton.setOnClickListener {
+            val ordersList = ordersAdapter.getOrdersList()
+            exportToExcel(ordersList)  // Panggil metode ekspor ke Excel
+        }
     }
 
-    // Fungsi untuk mengamati data di Firebase
+    // Observe perubahan data dari Firebase
     private fun observeOrders() {
         val ordersRef = database.child("orders")
         ordersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val ordersList = mutableListOf<Order>()
-
-                // Mengambil data dari Firebase
                 snapshot.children.forEach { orderSnapshot ->
                     val order = orderSnapshot.getValue(Order::class.java)
                     if (order != null) {
                         ordersList.add(order.copy(key = orderSnapshot.key ?: ""))
                     }
                 }
-
-                // Perbarui adapter dengan data baru
+                // Update Adapter dengan data terbaru
                 ordersAdapter.updateOrdersList(ordersList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Logika error handling
+                Toast.makeText(this@MainActivity, "Failed to fetch orders: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Fungsi untuk menghapus data dari Firebase
-    private fun deleteOrder(key: String) {
+    // Hapus satu order
+    private fun deleteOrder(resellerName: String, key: String) {
         database.child("orders").child(key).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Order from $resellerName deleted successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to delete order: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    // Fungsi untuk menyimpan data (contoh: update status)
-    private fun saveOrder(key: String) {
-        // Logika untuk menyimpan atau update status (contoh: mark as completed)
-        database.child("orders").child(key).child("status").setValue("Saved")
+    // Simpan order ke saved orders
+    private fun saveOrderAsSaved(key: String) {
+        val orderRef = database.child("orders").child(key)
+        orderRef.get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()) {
+                val order = dataSnapshot.getValue(Order::class.java)
+                order?.let {
+                    database.child("saved").child(it.resellerName).child(key).setValue(it)
+                        .addOnSuccessListener {
+                            orderRef.removeValue()
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Order saved successfully", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this, "Failed to remove order: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save order: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+        }.addOnFailureListener { e ->
+            Toast.makeText(this, "Failed to retrieve order: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Hapus semua order
+    private fun deleteAllOrders() {
+        database.child("orders").removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, "All orders deleted successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to delete orders: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    // Dialog konfirmasi hapus semua order
+    private fun showDeleteConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirm Deletion")
+        builder.setMessage("Are you sure you want to delete all orders? This action cannot be undone.")
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            deleteAllOrders()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    // Dialog konfirmasi hapus satu order
+    private fun showDeleteOrderConfirmationDialog(resellerName: String, key: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirm Deletion")
+        builder.setMessage("Are you sure you want to delete the order from \"$resellerName\"?")
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            deleteOrder(resellerName, key)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    // Method untuk ekspor data orders ke Excel
+    private fun exportToExcel(ordersList: List<Order>) {
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Orders")
+
+        // Create header row
+        val headerRow = sheet.createRow(0)
+        val headers = arrayOf("Reseller Name", "Name", "Phone", "Item", "Down Payment", "Address", "Timestamp")
+        headers.forEachIndexed { index, header ->
+            headerRow.createCell(index).setCellValue(header)
+        }
+
+        // Populate data rows
+        ordersList.forEachIndexed { rowIndex, order ->
+            val row = sheet.createRow(rowIndex + 1)
+            row.createCell(0).setCellValue(order.resellerName)
+            row.createCell(1).setCellValue(order.name)  // Display reseller's name
+            row.createCell(2).setCellValue(order.phone.toString())  // Display phone number
+            row.createCell(3).setCellValue(order.item) // Display item
+            row.createCell(4).setCellValue(order.dp.toString()) // Display down payment
+            row.createCell(5).setCellValue(order.address)  // Display address
+            row.createCell(6).setCellValue(formatTimestamp(order.timestamp)) // Format timestamp to readable date
+        }
+
+        // Save file
+        try {
+            val contentResolver: ContentResolver = applicationContext.contentResolver
+
+            // For Android 10 and above (Scoped Storage)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, "Orders.xlsx")
+                    put(MediaStore.MediaColumns.MIME_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)  // Save to Downloads folder
+                }
+
+                val uri = contentResolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+
+                if (uri != null) {
+                    val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
+                    outputStream?.use { stream ->
+                        workbook.write(stream)
+                        Toast.makeText(this, "Excel file saved to Downloads", Toast.LENGTH_LONG).show()
+                    }
+                    workbook.close()
+                } else {
+                    Toast.makeText(this, "Failed to create file in Downloads", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // For Android 9 and below (Legacy Storage)
+                val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Orders.xlsx")
+                val outputStream = FileOutputStream(file)
+                workbook.write(outputStream)
+                outputStream.close()
+                Toast.makeText(this, "Excel file saved to Downloads", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error exporting data: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Helper method to format timestamp
+    private fun formatTimestamp(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        return sdf.format(Date(timestamp))
     }
 }

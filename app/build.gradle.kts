@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.resellerapp"
-        minSdk = 24
+        minSdk = 26 // Menyesuaikan dengan Log4j yang membutuhkan Android API 26 atau lebih tinggi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -41,9 +41,24 @@ android {
         viewBinding = true // Enable ViewBinding
         compose = true
     }
+
+    packaging {
+        // Menggunakan resources.excludes untuk mengecualikan file yang tidak diinginkan
+        resources.excludes.add("META-INF/DEPENDENCIES")
+        resources.excludes.add("META-INF/NOTICE")
+        resources.excludes.add("META-INF/LICENSE")
+        resources.excludes.add("META-INF/LICENSE.txt")
+        resources.excludes.add("META-INF/NOTICE.txt")
+        resources.excludes.add("META-INF/README")
+        resources.excludes.add("META-INF/README.txt")
+
+        // Mengecualikan file .so jika ada
+        jniLibs.excludes.add("**/*.so")
+    }
 }
 
 dependencies {
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("com.journeyapps:zxing-android-embedded:4.2.0")
 
     // Firebase
