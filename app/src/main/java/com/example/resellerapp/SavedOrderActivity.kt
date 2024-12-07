@@ -18,6 +18,9 @@ import java.io.File
 import java.io.FileOutputStream
 import android.os.Environment
 import java.io.OutputStream
+import android.content.Intent // Import for starting activities
+import com.example.resellerapp.ui.theme.GenerateQRActivity
+
 
 class SavedOrderActivity : AppCompatActivity() {
 
@@ -59,6 +62,18 @@ class SavedOrderActivity : AppCompatActivity() {
         binding.exportButton.setOnClickListener {
             val savedOrdersList = savedOrdersAdapter.getOrdersList()
             exportToExcel(savedOrdersList)  // Call the export method
+        }
+
+        // Add click listener for the QR button to navigate to GenerateQRActivity
+        binding.generateQrButton.setOnClickListener {
+            val intent = Intent(this, GenerateQRActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Add click listener for the home button to navigate to MainActivity
+        binding.homeButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
