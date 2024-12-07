@@ -17,6 +17,9 @@ import java.io.OutputStream
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Color
+import android.content.Intent
+import com.example.resellerapp.MainActivity
+import com.example.resellerapp.SavedOrderActivity
 
 
 class GenerateQRActivity : AppCompatActivity() {
@@ -25,6 +28,8 @@ class GenerateQRActivity : AppCompatActivity() {
     private lateinit var resellerNameInput: EditText
     private lateinit var generateQrButton: Button
     private lateinit var saveQrButton: Button
+    private lateinit var homeButton: ImageView // Tombol Home
+    private lateinit var leadButton: ImageView // Tombol Lead
     private var generatedBitmap: Bitmap? = null
     private var currentResellerName: String = ""
 
@@ -36,6 +41,20 @@ class GenerateQRActivity : AppCompatActivity() {
         resellerNameInput = findViewById(R.id.resellerNameInput)
         generateQrButton = findViewById(R.id.generateQrButton)
         saveQrButton = findViewById(R.id.saveQrButton)
+        homeButton = findViewById(R.id.homeButton) // ID Tombol Home
+        leadButton = findViewById(R.id.ivLead) // ID Tombol Lead
+
+        // Tombol Home - Pindah ke MainActivity
+        homeButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Tombol Lead - Pindah ke SavedOrderActivity
+        leadButton.setOnClickListener {
+            val intent = Intent(this, SavedOrderActivity::class.java)
+            startActivity(intent)
+        }
 
         // Generate QR Code
         generateQrButton.setOnClickListener {
