@@ -59,13 +59,8 @@ class OrdersAdapter(
     override fun getItemCount(): Int = ordersList.size
 
     class OrderViewHolder(itemView: View, private val showSaveButton: Boolean) : RecyclerView.ViewHolder(itemView) {
+        private val detailText: TextView = itemView.findViewById(R.id.detailText) // TextView baru
         private val resellerName: TextView = itemView.findViewById(R.id.resellerName)
-        private val nameText: TextView = itemView.findViewById(R.id.nameText)
-        private val addressText: TextView = itemView.findViewById(R.id.addressText)
-        private val phoneText: TextView = itemView.findViewById(R.id.phoneText)
-        private val itemText: TextView = itemView.findViewById(R.id.itemText)
-        private val dpText: TextView = itemView.findViewById(R.id.dpText)
-        private val dateText: TextView = itemView.findViewById(R.id.dateText)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
         val saveButton: ImageView = itemView.findViewById(R.id.saveButton)
 
@@ -73,13 +68,20 @@ class OrdersAdapter(
             val formatter = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
             val dateString = formatter.format(order.timestamp)
 
-            resellerName.text = order.resellerName
-            nameText.text = "Nama : ${order.name}"
-            addressText.text = "Alamat : ${order.address}"
-            phoneText.text = "No.Telepon : ${order.phone}"
-            itemText.text = "Barang : ${order.item}"
-            dpText.text = "DP : ${order.dp}"
-            dateText.text = "Tanggal Pengajuan : $dateString"
+            resellerName.text = "Reseller : ${order.resellerName}"
+
+            // Gabungkan semua data menjadi satu string
+            val combinedData = """
+            Nama: ${order.name}
+            Alamat: ${order.address} 
+            No. Telepon: ${order.phone} 
+            Barang: ${order.item} 
+            DP: ${order.dp} 
+            Tanggal Pengajuan: $dateString 
+            """.trimIndent()
+
+            // Tampilkan data yang sudah digabung di TextView
+            detailText.text = combinedData
 
             // Show or hide the "Save" button based on the showSaveButton flag
             saveButton.visibility = if (showSaveButton) View.VISIBLE else View.GONE

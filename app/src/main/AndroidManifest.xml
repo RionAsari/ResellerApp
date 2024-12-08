@@ -8,6 +8,9 @@
     <!-- Menambahkan izin untuk akses jaringan WiFi dan data -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Izin Notifikasi -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!-- Menambahkan izin untuk menyimpan QR code ke penyimpanan (Jika diperlukan) -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />

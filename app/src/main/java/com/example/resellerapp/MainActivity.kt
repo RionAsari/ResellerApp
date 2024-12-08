@@ -1,5 +1,10 @@
 package com.example.resellerapp
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import androidx.core.app.NotificationCompat
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -29,11 +34,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: DatabaseReference
     private lateinit var ordersAdapter: OrdersAdapter
+    private var previousOrdersCount: Int = 0 // Menyimpan jumlah data order sebelumnya
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Setup Notification Channel
+        createNotificationChannel()
 
         // Setup Firebase reference
         database = FirebaseDatabase.getInstance().reference
@@ -92,6 +101,18 @@ class MainActivity : AppCompatActivity() {
                 }
                 // Update Adapter dengan data terbaru
                 ordersAdapter.updateOrdersList(ordersList)
+
+                // Cek jika ada order baru
+                val currentOrdersCount = ordersList.size
+                if (currentOrdersCount > previousOrdersCount) {
+                    // Tampilkan notifikasi bahwa ada order baru
+                    val newOrders = currentOrdersCount - previousOrdersCount
+                    showNewOrderNotification(
+                        "New Order",
+                        "You have $newOrders new order(s)."
+                    )
+                }
+                previousOrdersCount = currentOrdersCount // Perbarui jumlah order
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -245,4 +266,34 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         return sdf.format(Date(timestamp))
     }
+
+    // Fungsi untuk membuat Notification Channel (hanya untuk Android Oreo ke atas)
+    @SuppressLint("ObsoleteSdkInt")
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "order_notifications",
+                "Order Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for new orders"
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    // Fungsi untuk menampilkan notifikasi
+    private fun showNewOrderNotification(title: String, message: String) {
+        val builder = NotificationCompat.Builder(this, "order_notifications")
+            .setSmallIcon(R.drawable.ic_notification) // Ganti dengan ikon yang sesuai
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, builder.build())
+    }
+
 }
