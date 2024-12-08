@@ -21,19 +21,11 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/resellerLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:text="Reseller :"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/resellerName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="..."
+                android:layout_marginEnd="8dp"
+                android:text="Reseller"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -45,51 +37,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/nameText"
+                android:id="@+id/detailText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Nama : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/addressText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Alamat : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/phoneText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="No.Telepon : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/itemText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Barang : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/dpText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="DP : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
-            <TextView
-                android:id="@+id/dateText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Tanggal Pengajuan : "
-                android:textSize="16sp"
-                android:layout_marginTop="8dp" />
+                android:text="Details"
+                android:textSize="17sp"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
 
         <!-- Action Buttons -->
@@ -103,19 +56,19 @@
             <!-- Delete Button -->
             <ImageView
                 android:id="@+id/deleteButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_delete"
                 android:background="@drawable/circle_background"
                 android:padding="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:text="Delete" />
 
             <!-- Save Button -->
             <ImageView
                 android:id="@+id/saveButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_save"
                 android:background="@drawable/circle_background"
                 android:padding="8dp"
