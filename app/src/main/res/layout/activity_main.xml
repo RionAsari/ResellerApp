@@ -44,10 +44,22 @@
             android:id="@+id/ivLead"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/ic_lead"
             android:background="@drawable/circle_background"
             android:padding="8dp"
             android:text="Lead" />
+
+        <ImageView
+            android:id="@+id/logoutButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_logout"
+            android:background="@drawable/circle_background"
+            android:padding="8dp"
+            android:text="Logout" />
+
+
     </LinearLayout>
 
     <!-- Grouping Delete All Button, Export Button, and RecyclerView -->

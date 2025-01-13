@@ -20,6 +20,7 @@ import android.os.Environment
 import java.io.OutputStream
 import android.content.Intent // Import for starting activities
 import com.example.resellerapp.ui.theme.GenerateQRActivity
+import com.example.resellerapp.ChartActivity
 
 
 class SavedOrderActivity : AppCompatActivity() {
@@ -73,6 +74,11 @@ class SavedOrderActivity : AppCompatActivity() {
         // Add click listener for the home button to navigate to MainActivity
         binding.homeButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+        // Navigate to ChartActivity (Lihat Chart)
+        binding.chartButton.setOnClickListener {
+            val intent = Intent(this, ChartActivity::class.java)
             startActivity(intent)
         }
     }

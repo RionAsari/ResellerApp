@@ -8,6 +8,6 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("com.google.gms:google-services:4.3.15")  // Correct classpath dependency
+        classpath("com.google.gms:google-services:4.3.15") // Correct classpath dependency
     }
 }

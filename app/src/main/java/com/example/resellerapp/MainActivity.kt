@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.resellerapp.databinding.ActivityMainBinding
 import com.example.resellerapp.ui.theme.GenerateQRActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -41,6 +42,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Periksa apakah pengguna sudah login
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            // Jika belum login, arahkan ke LoginActivity
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
+            return
+        }
+
+        // Jika sudah login, lanjutkan inisialisasi
+        setupApp()
+    }
+
+    private fun setupApp() {
         // Setup Notification Channel
         createNotificationChannel()
 
@@ -62,29 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         observeOrders()
-
-        // Event tombol untuk generate QR
-        binding.generateQrButton.setOnClickListener {
-            val intent = Intent(this, GenerateQRActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Event tombol untuk saved orders
-        binding.ivLead.setOnClickListener {
-            val intent = Intent(this, SavedOrderActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Event tombol delete semua orders
-        binding.deleteallButton.setOnClickListener {
-            showDeleteConfirmationDialog()
-        }
-
-        // Event tombol untuk export data ke Excel
-        binding.exportButton.setOnClickListener {
-            val ordersList = ordersAdapter.getOrdersList()
-            exportToExcel(ordersList)  // Panggil metode ekspor ke Excel
-        }
+        setupEventListeners()
     }
 
     // Observe perubahan data dari Firebase
@@ -120,6 +115,42 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun setupEventListeners() {
+        // Event tombol untuk generate QR
+        binding.generateQrButton.setOnClickListener {
+            val intent = Intent(this, GenerateQRActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Event tombol untuk saved orders
+        binding.ivLead.setOnClickListener {
+            val intent = Intent(this, SavedOrderActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Event tombol delete semua orders
+        binding.deleteallButton.setOnClickListener {
+            showDeleteConfirmationDialog()
+        }
+
+        // Event tombol untuk export data ke Excel
+        binding.exportButton.setOnClickListener {
+            val ordersList = ordersAdapter.getOrdersList()
+            exportToExcel(ordersList)  // Panggil metode ekspor ke Excel
+        }
+
+        // Event tombol logout
+        binding.logoutButton.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
+        }
+
+    }
+
 
     // Hapus satu order
     private fun deleteOrder(resellerName: String, key: String) {

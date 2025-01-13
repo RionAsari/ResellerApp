@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Menambahkan izin untuk internet -->
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Menambahkan izin untuk akses jaringan WiFi dan data -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Izin Notifikasi -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- Menambahkan izin untuk menyimpan QR code ke penyimpanan (Jika diperlukan) -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
-
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Menambahkan izin untuk akses jaringan WiFi dan data -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Izin Notifikasi -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Menambahkan izin untuk menyimpan QR code ke penyimpanan (Jika diperlukan) -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -26,7 +22,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ResellerApp"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ChartActivity"/>
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,24 +37,20 @@
             android:theme="@style/Theme.ResellerApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Menambahkan deklarasi untuk GenerateQRActivity -->
+        </activity> <!-- Menambahkan deklarasi untuk GenerateQRActivity -->
         <activity
             android:name=".ui.theme.GenerateQRActivity"
             android:exported="true"
             android:label="Generate QR Code"
-            android:theme="@style/Theme.ResellerApp" />
-
-        <!-- Menambahkan deklarasi untuk SavedOrderActivity -->
+            android:theme="@style/Theme.ResellerApp" /> <!-- Menambahkan deklarasi untuk SavedOrderActivity -->
         <activity
             android:name=".SavedOrderActivity"
             android:exported="true"
             android:label="Saved Orders"
             android:theme="@style/Theme.ResellerApp" />
-
     </application>
 
 </manifest>

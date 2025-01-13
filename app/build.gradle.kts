@@ -71,9 +71,13 @@ dependencies {
 
     // Material Design
     implementation("com.google.android.material:material:1.8.0")
+    // Chart design
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
     // Recyclerview
     implementation("androidx.recyclerview:recyclerview:1.2.1")
+
 
     // Kotlin extensions
     implementation(libs.androidx.core.ktx)
@@ -85,6 +89,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
 
     // Testing libraries
     testImplementation(libs.junit)
